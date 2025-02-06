@@ -10,21 +10,25 @@ public class Book {
     private boolean status;
     private String edition;
     private String dateOfPurchase;
+    private String category;
 
 
-    public Book(String author, String name, double price, String edition, String dateOfPurchase) {
+    public Book(String author, String name, double price, String edition, String dateOfPurchase, String category) {
         this.bookID = UUID.randomUUID().toString();
         this.author = author;
         this.name = name;
         this.price = price;
-        this.status = true; // Yeni eklenen kitaplar mevcut
+        this.status = true; // kitaplar mevcut
         this.edition = edition;
         this.dateOfPurchase = dateOfPurchase;
+        this.category = category;
     }
 
     public String getBookID() {
         return bookID;
     }
+
+
 
     public String getAuthor() {
         return author;
@@ -48,6 +52,10 @@ public class Book {
 
     public String getDateOfPurchase() {
         return dateOfPurchase;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public void setBookID(String bookID) {
@@ -78,15 +86,19 @@ public class Book {
         this.dateOfPurchase = dateOfPurchase;
     }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public void display() {
         System.out.println("Kitap Bilgileri:");
         System.out.println("Book ID: " + bookID);
         System.out.println("Başlık: " + name);
         System.out.println("Yazar: " + author);
-        System.out.println("Fiyat: $" + price);
+        System.out.println("Fiyat: ₺" + price);
         System.out.println("Baskı: " + edition);
         System.out.println("Satın Alma Tarihi: " + dateOfPurchase);
+        System.out.println("Kategori: " + category);
         System.out.println("Durum: " + (status ? "Mevcut" : "Ödünç Alınmış"));
     }
 }

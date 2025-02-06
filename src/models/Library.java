@@ -13,59 +13,72 @@ public class Library {
         this.scanner = new Scanner(System.in);
     }
 
-    //  Yeni kitap ekleme metodu
+    //  yeni kitap ekleme
     public void addBook() {
-        System.out.print("Kitap Başlığı: ");
+        System.out.print("Kitap Ismi: ");
         String title = scanner.nextLine();
         System.out.print("Yazar: ");
         String author = scanner.nextLine();
         System.out.print("Fiyat: ");
         double price = scanner.nextDouble();
-        scanner.nextLine(); // Boş satırı temizle
+        scanner.nextLine();
         System.out.print("Baskı: ");
         String edition = scanner.nextLine();
         System.out.print("Satın Alma Tarihi: ");
         String dateOfPurchase = scanner.nextLine();
+        System.out.print("Kategori Seçin (Journals, StudyBooks, Magazines): ");
+        String category = scanner.nextLine();
 
-        Book book = new Book(author, title, price, edition, dateOfPurchase);
+        Book book = new Book(author, title, price, edition, dateOfPurchase, category);
         books.add(book);
-        System.out.println("✅ Kitap başarıyla eklendi: " + title);
+        System.out.println("Kitap başarıyla eklendi: " + title);
     }
 
 
-    //  Yeni okuyucu kaydetme metodu
+    //  okuyucu ekleme
     public void registerReader() {
         System.out.print("Okuyucu Adı: ");
         String name = scanner.nextLine();
         Reader reader = new Reader(name);
         if (readers.add(reader)) {
-            System.out.println("✅ " + name + " kütüphaneye kayıt oldu.");
+            System.out.println(  name + " kütüphaneye kayıt oldu.");
         } else {
-            System.out.println("❌ Bu okuyucu zaten kayıtlı!");
+            System.out.println("Bu okuyucu zaten kayıtlı!");
         }
     }
 
 
-    //  Kitap ödünç verme metodu
+    //  kitap odunc verme
     public void lendBook() {
         System.out.print("Okuyucu Adı: ");
         String readerName = scanner.nextLine();
         Reader reader = findReaderByName(readerName);
+
+        // kullanici yoksa ekle
         if (reader == null) {
-            System.out.println("❌ Kullanıcı bulunamadı!");
-            return;
+            System.out.println("Kullanıcı bulunamadı. Yeni bir kayıt oluşturuluyor");
+            reader = new Reader(readerName);
+            registerReaderDirectly(reader);
         }
+
 
         System.out.print("Kitap Adı: ");
         String bookTitle = scanner.nextLine();
         Book book = findBookByTitle(bookTitle);
-        if (book == null || !book.isStatus()) {
-            System.out.println("❌ Kitap mevcut değil!");
+
+        if (book == null) {
+            System.out.println("Kitap bulunamadı!");
             return;
         }
 
-        reader.borrowBook(book);
+        if (!book.isStatus()) {
+            System.out.println("Bu kitap zaten başka biri tarafından ödünç alınmış!");
+            return;
+        }
+
+        System.out.println(readerName + " kitabı ödünç aldı: " + bookTitle);
     }
+
 
 
     //  Kitap iade etme metodu
@@ -74,7 +87,7 @@ public class Library {
         String readerName = scanner.nextLine();
         Reader reader = findReaderByName(readerName);
         if (reader == null) {
-            System.out.println("❌ Kullanıcı bulunamadı!");
+            System.out.println("Kullanıcı bulunamadı!");
             return;
         }
 
@@ -82,29 +95,13 @@ public class Library {
         String bookTitle = scanner.nextLine();
         Book book = findBookByTitle(bookTitle);
         if (book == null) {
-            System.out.println("❌ Kitap bulunamadı!");
+            System.out.println("Kitap bulunamadı!");
             return;
         }
 
         reader.returnBook(book);
     }
 
-
-    //  Kütüphanedeki kitapları listeleme
-    public void showBooks() {
-        if (books.isEmpty()) {
-            System.out.println("📌 Kütüphanede kitap bulunmuyor.");
-            return;
-        }
-        System.out.println("📚 Kütüphanedeki Kitaplar:");
-        for (Book book : books) {
-            book.display();
-            System.out.println("----------------------");
-        }
-    }
-
-
-    //  Yardımcı Metotlar (Okuyucu ve Kitap Bulma)
     private Reader findReaderByName(String name) {
         for (Reader reader : readers) {
             if (reader.getName().equalsIgnoreCase(name)) {
@@ -123,35 +120,14 @@ public class Library {
         return null;
     }
 
-    //  Direkt olarak kitap ekleyen metot (Sadece Librarian çağırabilir)
-    public void addBookDirectly(Book book) {
-        books.add(book);
-    }
 
-    //  Direkt olarak okuyucu ekleyen metot (Sadece Librarian çağırabilir)
+    //  Okuyucu eklemek icin
     public void registerReaderDirectly(Reader reader) {
         readers.add(reader);
     }
 
-    //  Direkt kitap ödünç alma işlemi (Sadece Librarian çağırabilir)
-    public boolean lendBookDirectly(Reader reader, Book book) {
-        if (book.isStatus()) {
-            reader.borrowBook(book);
-            return true;
-        }
-        return false;
-    }
 
-    //  Direkt kitap iade alma işlemi (Sadece Librarian çağırabilir)
-    public boolean returnBookDirectly(Reader reader, Book book) {
-        if (reader != null && book != null) {
-            reader.returnBook(book);
-            return true;
-        }
-        return false;
-    }
-
-    //  Kitap Arama (ID, İsim, Yazar)
+    //   arama methodu
     public void searchBook() {
         System.out.print("Arama Türü Seçin (1: ID, 2: İsim, 3: Yazar): ");
         int choice = scanner.nextInt();
@@ -172,15 +148,15 @@ public class Library {
         }
     }
 
-    //  Kitap Silme Metodu
+    //  silme methodu
     public void deleteBook() {
         System.out.print("Silinecek Kitabın Adını Girin: ");
         String name = scanner.nextLine();
         books.removeIf(book -> book.getName().equalsIgnoreCase(name));
-        System.out.println("✅ Kitap silindi!");
+        System.out.println("Kitap silindi!");
     }
 
-    //  Kitap Güncelleme Metodu
+    //  guncellemek icin
     public void updateBook() {
         System.out.print("Güncellenecek Kitabın Adını Girin: ");
         String name = scanner.nextLine();
@@ -190,37 +166,37 @@ public class Library {
                 double newPrice = scanner.nextDouble();
                 scanner.nextLine();
                 book.setPrice(newPrice);
-                System.out.println("✅ Kitap güncellendi!");
+                System.out.println("Kitap güncellendi!");
                 return;
             }
         }
-        System.out.println("❌ Kitap bulunamadı!");
+        System.out.println("Kitap bulunamadı!");
     }
 
-    //  Kategoriye Göre Kitapları Listeleme
+    //  kategori secimi
     public void listBooksByCategory(String category) {
-        System.out.println("\n📂 Kategoriye Göre Kitaplar: " + category);
+        System.out.println("Kategoriye Göre Kitaplar: " + category);
         boolean found = false;
         for (Book book : books) {
-            if (book instanceof Journals && category.equalsIgnoreCase("Journals")) {
+            if (book.getCategory().equalsIgnoreCase("Journals")) {
                 book.display();
                 found = true;
-            } else if (book instanceof StudyBooks && category.equalsIgnoreCase("StudyBooks")) {
+            } else if (book.getCategory().equalsIgnoreCase("StudyBooks")) {
                 book.display();
                 found = true;
-            } else if (book instanceof Magazines && category.equalsIgnoreCase("Magazines")) {
+            } else if (book.getCategory().equalsIgnoreCase("Magazines")) {
                 book.display();
                 found = true;
             }
         }
         if (!found) {
-            System.out.println("❌ Bu kategoride kitap bulunamadı.");
+            System.out.println("Bu kategoride kitap bulunamadı.");
         }
     }
 
-    //  Yazara Göre Kitapları Listeleme
+    //  yazara gore siralama
     public void listBooksByAuthor(String author) {
-        System.out.println("\n✍️ Yazar: " + author + " Tarafından Yazılan Kitaplar");
+        System.out.println("Yazar: " + author + " Tarafından Yazılan Kitaplar");
         boolean found = false;
         for (Book book : books) {
             if (book.getAuthor().equalsIgnoreCase(author)) {
@@ -229,7 +205,7 @@ public class Library {
             }
         }
         if (!found) {
-            System.out.println("❌ Bu yazara ait kitap bulunamadı.");
+            System.out.println("Bu yazara ait kitap bulunamadı.");
         }
     }
 

@@ -5,20 +5,20 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Library library = new Library();
+
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\n📚 Kütüphane Yönetim Sistemine Hoş Geldiniz!");
-            System.out.println("1️⃣ Kitap Ekle");
-            System.out.println("2️⃣ Kitap Ara (ID, İsim, Yazar)");
-            System.out.println("3️⃣ Kitap Güncelle");
-            System.out.println("4️⃣ Kitap Sil");
-            System.out.println("5️⃣ Kategoriye Göre Kitapları Listele");
-            System.out.println("6️⃣ Yazara Göre Kitapları Listele");
-            System.out.println("7️⃣ Kitap Ödünç Al");
-            System.out.println("8️⃣ Kitap Geri Teslim Et");
-            System.out.println("9️⃣ Kullanıcı Faturalarını Görüntüle");
-            System.out.println("🔟 Çıkış");
+            System.out.println("Kütüphane Yönetim Sistemine Hoş Geldiniz!");
+            System.out.println("1 Kitap Ekle");
+            System.out.println("2 Kitap Ara (ID, İsim, Yazar)");
+            System.out.println("3 Kitap Güncelle");
+            System.out.println("4 Kitap Sil");
+            System.out.println("5 Kategoriye Göre Kitapları Listele");
+            System.out.println("6 Yazara Göre Kitapları Listele");
+            System.out.println("7 Kitap Ödünç Al");
+            System.out.println("8 Kitap Geri Teslim Et");
+            System.out.println("9 Kullanıcı Ekle");
             System.out.print("Seçiminizi yapın: ");
 
             int choice = scanner.nextInt();
@@ -54,14 +54,10 @@ public class Main {
                     library.returnBook();
                     break;
                 case 9:
-                    System.out.print("Kullanıcı Adı: ");
+                    library.registerReader();
                     break;
-                case 10:
-                    System.out.println("📌 Çıkış yapılıyor...");
-                    scanner.close();
-                    System.exit(0);
                 default:
-                    System.out.println("❌ Geçersiz seçim! Lütfen tekrar deneyin.");
+                    System.out.println("Geçersiz seçim! Lütfen tekrar deneyin.");
             }
         }
     }
